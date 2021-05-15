@@ -54,7 +54,7 @@ class MapasSDK {
      * @param string $priKey Chave privada da aplicação no Mapas Culturais
      * @param string $algo Algorítimo usado para encriptar o JWT
      */
-    public function __construct($instanceUrl, $pubKey, $priKey, $algo = 'HS512') {
+    public function __construct($instanceUrl, $pubKey = null, $priKey = null, $algo = 'HS512') {
         $this->_mapasInstanceUrl = $instanceUrl;
         $this->_pubKey = $pubKey;
         $this->_priKey = $priKey;
@@ -102,10 +102,12 @@ class MapasSDK {
         foreach ($curlOptions as $option => $value) {
             $curl->setOpt($option, $value);
         }
-        
-        $curl->setHeader('authorization', $this->getJWT());
-        $curl->setHeader('MapasSDK-REQUEST', 'true');
 
+        if($this->_priKey && $this->_pubKey) {
+            $curl->setHeader('authorization', $this->getJWT());
+            $curl->setHeader('MapasSDK-REQUEST', 'true');
+        }
+        
         foreach ($headers as $k => $v) {
             $curl->setHeader($k, $v);
         }
